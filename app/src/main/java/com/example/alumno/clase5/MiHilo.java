@@ -18,15 +18,12 @@ public class MiHilo extends Thread
 
     public void run()
     {
-        try {
-            sleep(4000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        ConnectionManager cm = new ConnectionManager();
+
         Message msg = new Message();
         //Envia mensajes al hilo en cuestion
         msg.arg1 = 0;
-        msg.obj= "asd";
+        msg.obj= cm.obtenerString();
         this.mainActivityHandler.sendMessage(msg);
     }
 }
