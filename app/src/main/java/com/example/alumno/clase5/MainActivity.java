@@ -50,16 +50,19 @@ public class MainActivity extends AppCompatActivity implements  Handler.Callback
     @Override
     public boolean handleMessage(Message msg) {
         Log.d("Aplicacion","Llego Mensaje");
-        switch (msg.arg1)
+        if(msg.obj != null)
         {
-            case 0:
-                this.tv.setText(msg.obj.toString());
-                break;
-            case 1:
-                byte[] bytes = (byte[])msg.obj;
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                imgv.setImageBitmap(bitmap);
-                break;
+            switch (msg.arg1)
+            {
+                case 0:
+                    this.tv.setText(msg.obj.toString());
+                    break;
+                case 1:
+                    byte[] bytes = (byte[])msg.obj;
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                    imgv.setImageBitmap(bitmap);
+                    break;
+            }
         }
         return false;
     }
