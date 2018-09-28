@@ -10,9 +10,13 @@ import android.os.Message;
 public class MiHilo extends Thread
 {
     private Handler mainActivityHandler;
+    private String url;
+    private boolean esTexto;
 
-    public MiHilo(Handler handler)
+    public MiHilo(Handler handler, String url, boolean esTexto)
     {
+        this.url = url;
+        this.esTexto = esTexto;
         this.mainActivityHandler = handler;
     }
 
@@ -22,8 +26,15 @@ public class MiHilo extends Thread
 
         Message msg = new Message();
         //Envia mensajes al hilo en cuestion
-        msg.arg1 = 0;
-        msg.obj= cm.obtenerString();
+        if(this.esTexto == true)
+        {
+            msg.arg1 = 0;
+            msg.obj= new String(cm.obtenerString(this.url));
+        }else{
+            msg.arg1 = 1;
+            msg.obj = cm.obtenerString(this.url);
+        }
         this.mainActivityHandler.sendMessage(msg);
+
     }
 }

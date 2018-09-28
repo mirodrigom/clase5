@@ -14,10 +14,9 @@ import java.net.URL;
 
 public class ConnectionManager {
 
-
-    public String obtenerString()
+    public byte[] obtenerString(String urlString)
     {
-        final String urlString = "http://www.lslutnfra.com/alumnos/practicas/listaPersonas.xml";
+
         int response = 0;
         HttpURLConnection conexion= null;
         URL url;
@@ -44,12 +43,12 @@ public class ConnectionManager {
                     baos.write(buffer,0,length);
                 }
                 is.close();
-                return new String(baos.toByteArray());
+                return baos.toByteArray();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        return "";
+        return null;
     }
 }

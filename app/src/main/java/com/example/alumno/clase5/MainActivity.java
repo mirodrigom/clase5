@@ -1,16 +1,21 @@
 package com.example.alumno.clase5;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements  Handler.Callback {
 
-    MiHilo hilo;
+    MiHilo hiloUno;
+    MiHilo hiloDos;
     TextView tv;
+    ImageView imgv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,16 +25,25 @@ public class MainActivity extends AppCompatActivity implements  Handler.Callback
         Handler miHandler = new Handler(this);
 
         tv = (TextView) findViewById(R.id.txt);
-        hilo = new MiHilo(miHandler);
-        hilo.start();
+        imgv = (ImageView) findViewById(R.id.imgv);
+        final String urlStringTexto = "http://www.lslutnfra.com/alumnos/practicas/listaPersonas.xml";
+        final String urlStringImagen = "http://cdn5.nuevachevallier.com/wp-content-test/uploads/2017/11/HOTELES.jpg";
+        hiloUno = new MiHilo(miHandler,urlStringTexto,true);
+        hiloDos = new MiHilo(miHandler,urlStringImagen,false);
+        hiloUno.start();
+        hiloDos.start();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if(hilo.isAlive() == true)
+        if(hiloUno.isAlive() == true)
         {
-            hilo.interrupt();
+            hiloUno.interrupt();
+        }
+        if(hiloDos.isAlive() == true)
+        {
+            hiloDos.interrupt();
         }
     }
     //Basicamente recibe mensajes de un hilo a otro. Y este metodo lee todos los mensajes uno a uno.
@@ -40,6 +54,12 @@ public class MainActivity extends AppCompatActivity implements  Handler.Callback
         {
             case 0:
                 this.tv.setText(msg.obj.toString());
+                break;
+            case 1:
+                byte[] bytes = (byte[])msg.obj;
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                imgv.setImageBitmap(bitmap);
+                break;
         }
         return false;
     }
