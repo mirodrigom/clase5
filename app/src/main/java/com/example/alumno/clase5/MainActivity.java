@@ -10,10 +10,13 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements  Handler.Callback {
 
     MiHilo hiloUno;
     MiHilo hiloDos;
+    MiHilo hiloTres;
     TextView tv;
     ImageView imgv;
 
@@ -26,12 +29,16 @@ public class MainActivity extends AppCompatActivity implements  Handler.Callback
 
         tv = (TextView) findViewById(R.id.txt);
         imgv = (ImageView) findViewById(R.id.imgv);
-        final String urlStringTexto = "http://www.lslutnfra.com/alumnos/practicas/listaPersonas.xml";
+        //final String urlStringTexto = "http://www.lslutnfra.com/alumnos/practicas/listaPersonas.xml";
+        final String urlStringTexto = "http://192.168.3.79:8080/personas.xml";
+        final String urlStringJSON = "http://192.168.3.135:8080/personas.json";
         final String urlStringImagen = "http://cdn5.nuevachevallier.com/wp-content-test/uploads/2017/11/HOTELES.jpg";
-        hiloUno = new MiHilo(miHandler,urlStringTexto,true);
-        hiloDos = new MiHilo(miHandler,urlStringImagen,false);
-        hiloUno.start();
+        //hiloUno = new MiHilo(miHandler,urlStringTexto,true,"xml");
+        hiloDos = new MiHilo(miHandler,urlStringImagen,false,"");
+        hiloTres = new MiHilo(miHandler,urlStringJSON,true,"json");
+        //hiloUno.start();
         hiloDos.start();
+        hiloTres.start();
     }
 
     @Override
@@ -45,6 +52,10 @@ public class MainActivity extends AppCompatActivity implements  Handler.Callback
         {
             hiloDos.interrupt();
         }
+        if(hiloTres.isAlive() == true)
+        {
+            hiloTres.interrupt();
+        }
     }
     //Basicamente recibe mensajes de un hilo a otro. Y este metodo lee todos los mensajes uno a uno.
     @Override
@@ -55,7 +66,9 @@ public class MainActivity extends AppCompatActivity implements  Handler.Callback
             switch (msg.arg1)
             {
                 case 0:
-                    this.tv.setText(msg.obj.toString());
+                    List<Personas> lista_personas = (List<Personas>) msg.obj;
+                    this.tv.setText(lista_personas.get(1).getPhone());
+                    //this.tv.setText(msg.obj.toString());
                     break;
                 case 1:
                     byte[] bytes = (byte[])msg.obj;
